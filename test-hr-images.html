@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Image Upload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #1f2937; color: white; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #374151; border-radius: 8px; }
+        .preview { margin: 10px 0; padding: 10px; background: #374151; border-radius: 4px; }
+        .preview img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        button { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .load-btn { background: #3b82f6; color: white; }
+        .upload-btn { background: #10b981; color: white; }
+        .remove-btn { background: #ef4444; color: white; }
+        input[type="text"], input[type="file"] { padding: 8px; margin: 5px; border-radius: 4px; border: 1px solid #6b7280; background: #374151; color: white; }
+        .hidden { display: none; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #10b981; }
+        .error { background: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>HR Image Upload Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Joiner Image Upload</h2>
+        <div>
+            <input type="text" id="joiner-name" placeholder="Enter image name (e.g., John, Adam)" />
+            <button class="load-btn" onclick="testLoadJoinerImage()">Load from CDN</button>
+        </div>
+        <div>
+            <input type="file" id="joiner-file" accept="image/*" onchange="testJoinerFileUpload()" />
+            <button class="upload-btn" onclick="document.getElementById('joiner-file').click()">Upload File</button>
+        </div>
+        <div id="joiner-preview" class="preview hidden">
+            <img id="joiner-img" alt="Joiner photo" />
+            <button class="remove-btn" onclick="clearJoinerPreview()">Remove</button>
+        </div>
+        <div id="joiner-status" class="status hidden"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Birthday Image Upload</h2>
+        <div>
+            <input type="text" id="birthday-name" placeholder="Enter image name (e.g., Sarah, Mike)" />
+            <button class="load-btn" onclick="testLoadBirthdayImage()">Load from CDN</button>
+        </div>
+        <div>
+            <input type="file" id="birthday-file" accept="image/*" onchange="testBirthdayFileUpload()" />
+            <button class="upload-btn" onclick="document.getElementById('birthday-file').click()">Upload File</button>
+        </div>
+        <div id="birthday-preview" class="preview hidden">
+            <img id="birthday-img" alt="Birthday photo" />
+            <button class="remove-btn" onclick="clearBirthdayPreview()">Remove</button>
+        </div>
+        <div id="birthday-status" class="status hidden"></div>
+    </div>
+
+    <script>
+        function showStatus(elementId, message, isError = false) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = `status ${isError ? 'error' : 'success'}`;
+            statusEl.classList.remove('hidden');
+            setTimeout(() => statusEl.classList.add('hidden'), 3000);
+        }
+
+        function testLoadJoinerImage() {
+            const input = document.getElementById('joiner-name');
+            const imageName = input.value.trim();
+            
+            if (!imageName) {
+                showStatus('joiner-status', 'Please enter an image name', true);
+                return;
+            }
+            
+            const formats = ['jpg', 'jpeg', 'png'];
+            let formatIndex = 0;
+            
+            function tryFormat() {
+                if (formatIndex >= formats.length) {
+                    showStatus('joiner-status', `Image ${imageName} not found in any format`, true);
+                    return;
+                }
+                
+                const cdnUrl = `https://sep.turbifycdn.com/yf/nrp/image/turbify/newsletter/${imageName}.${formats[formatIndex]}`;
+                console.log(`Trying to load: ${cdnUrl}`);
+                
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log(`Successfully loaded: ${cdnUrl}`);
+                    const preview = document.getElementById('joiner-preview');
+                    const img = document.getElementById('joiner-img');
+                    img.src = cdnUrl;
+                    preview.classList.remove('hidden');
+                    showStatus('joiner-status', `Loaded ${imageName}.${formats[formatIndex]}`);
+                };
+                
+                testImg.onerror = function() {
+                    console.log(`Failed to load: ${cdnUrl}`);
+                    formatIndex++;
+                    tryFormat();
+                };
+                
+                testImg.src = cdnUrl;
+            }
+            
+            tryFormat();
+        }
+
+        function testJoinerFileUpload() {
+            const fileInput = document.getElementById('joiner-file');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showStatus('joiner-status', 'Please select an image file', true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('joiner-preview');
+                const img = document.getElementById('joiner-img');
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+                showStatus('joiner-status', 'File uploaded successfully');
+            };
+            
+            reader.onerror = function() {
+                showStatus('joiner-status', 'Failed to read file', true);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function clearJoinerPreview() {
+            document.getElementById('joiner-preview').classList.add('hidden');
+            document.getElementById('joiner-img').src = '';
+            document.getElementById('joiner-file').value = '';
+        }
+
+        function testLoadBirthdayImage() {
+            const input = document.getElementById('birthday-name');
+            const imageName = input.value.trim();
+            
+            if (!imageName) {
+                showStatus('birthday-status', 'Please enter an image name', true);
+                return;
+            }
+            
+            const formats = ['jpg', 'jpeg', 'png'];
+            let formatIndex = 0;
+            
+            function tryFormat() {
+                if (formatIndex >= formats.length) {
+                    showStatus('birthday-status', `Image ${imageName} not found in any format`, true);
+                    return;
+                }
+                
+                const cdnUrl = `https://sep.turbifycdn.com/yf/nrp/image/turbify/newsletter/${imageName}.${formats[formatIndex]}`;
+                console.log(`Trying to load: ${cdnUrl}`);
+                
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log(`Successfully loaded: ${cdnUrl}`);
+                    const preview = document.getElementById('birthday-preview');
+                    const img = document.getElementById('birthday-img');
+                    img.src = cdnUrl;
+                    preview.classList.remove('hidden');
+                    showStatus('birthday-status', `Loaded ${imageName}.${formats[formatIndex]}`);
+                };
+                
+                testImg.onerror = function() {
+                    console.log(`Failed to load: ${cdnUrl}`);
+                    formatIndex++;
+                    tryFormat();
+                };
+                
+                testImg.src = cdnUrl;
+            }
+            
+            tryFormat();
+        }
+
+        function testBirthdayFileUpload() {
+            const fileInput = document.getElementById('birthday-file');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showStatus('birthday-status', 'Please select an image file', true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('birthday-preview');
+                const img = document.getElementById('birthday-img');
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+                showStatus('birthday-status', 'File uploaded successfully');
+            };
+            
+            reader.onerror = function() {
+                showStatus('birthday-status', 'Failed to read file', true);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function clearBirthdayPreview() {
+            document.getElementById('birthday-preview').classList.add('hidden');
+            document.getElementById('birthday-img').src = '';
+            document.getElementById('birthday-file').value = '';
+        }
+    </script>
+</body>
+</html>

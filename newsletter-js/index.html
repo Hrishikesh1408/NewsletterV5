@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Newsletter Sender</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        textarea { width: 100%; height: 150px; margin: 10px 0; }
+        button { background: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>📧 Newsletter Sender</h1>
+    <p>Enter email addresses (one per line):</p>
+    <textarea id="emails" placeholder="john.doe@company.com&#10;jane.smith@company.com"></textarea>
+    <br>
+    <p>Upload images (optional):</p>
+    <input type="file" id="images" multiple accept="image/*" style="margin: 10px 0;">
+    <br>
+    <button onclick="sendNewsletter()">Send Newsletter</button>
+    <div id="result"></div>
+
+    <script>
+        async function sendNewsletter() {
+            const emailText = document.getElementById('emails').value;
+            const emails = emailText.split('\n').filter(email => email.trim());
+            const imageFiles = document.getElementById('images').files;
+            
+            if (emails.length === 0) {
+                showResult('Please enter at least one email address', 'error');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('emails', emails.join(','));
+                
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append('images', imageFiles[i]);
+                }
+                
+                const response = await fetch('/api/newsletter/send', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                showResult(result.message || result.error, response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('Error: ' + error.message, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = 'result ' + type;
+        }
+    </script>
+</body>
+</html>

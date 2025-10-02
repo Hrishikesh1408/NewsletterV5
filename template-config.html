@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Configuration - Newsletter Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        .section-item { transition: all 0.3s ease; cursor: move; }
+        .section-item:hover { background-color: rgba(55, 65, 81, 0.5); }
+        .section-item.dragging { opacity: 0.5; transform: rotate(5deg); }
+        .section-item.drag-over { border: 2px dashed #3b82f6; background-color: rgba(59, 130, 246, 0.1); }
+        .drag-handle { cursor: grab; color: #9ca3af; }
+        .drag-handle:hover { color: #3b82f6; }
+        .drag-handle:active { cursor: grabbing; }
+        .quill-editor { background: white; color: black; }
+        .ql-toolbar { border-top: 1px solid #ccc; }
+        .ql-container { border-bottom: 1px solid #ccc; }
+        .section-controls { display: flex; gap: 5px; align-items: center; }
+        .move-buttons { display: flex; flex-direction: column; gap: 2px; }
+        .move-btn { padding: 2px 6px; font-size: 10px; background: #4b5563; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .move-btn:hover { background: #6b7280; }
+        .move-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body class="bg-neutral-800 text-white min-h-screen">
+    <div class="container mx-auto p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Template Configuration</h1>
+                <p class="text-neutral-400">Configure hierarchical sections for newsletter templates</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="saveTemplate()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2">
+                    <span class="material-symbols-outlined">save</span>
+                    Save Template
+                </button>
+                <button onclick="addRootSection()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2">
+                    <span class="material-symbols-outlined">add</span>
+                    Add Section
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Template List -->
+            <div class="bg-neutral-700 rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Templates</h2>
+                <div id="template-list" class="space-y-2">
+                    <!-- Templates will be loaded here -->
+                </div>
+                <button onclick="createNewTemplate()" class="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Create New Template
+                </button>
+            </div>
+
+            <!-- Section Tree -->
+            <div class="bg-neutral-700 rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Section Structure</h2>
+                <div id="section-tree" class="space-y-2">
+                    <!-- Section tree will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Section Editor -->
+            <div class="bg-neutral-700 rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Section Editor</h2>
+                <div id="section-editor">
+                    <p class="text-neutral-400">Select a section to edit</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Section Modal -->
+    <div id="add-section-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-neutral-800 rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold mb-4">Add New Section</h3>
+            <form id="add-section-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Section Title</label>
+                    <input type="text" id="section-title" required class="w-full p-2 bg-neutral-700 text-white rounded border border-neutral-600 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Color</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="section-color" value="#f97316" class="w-12 h-10 rounded border border-neutral-600">
+                        <input type="text" id="section-color-hex" value="#f97316" class="flex-1 p-2 bg-neutral-700 text-white rounded border border-neutral-600">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="section-enabled" checked class="rounded">
+                    <label for="section-enabled" class="text-sm">Enabled</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="section-heading-only" class="rounded">
+                    <label for="section-heading-only" class="text-sm">Heading Only (no content editor)</label>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="hideAddSectionModal()" class="flex-1 px-4 py-2 bg-neutral-600 text-white rounded hover:bg-neutral-500">Cancel</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add Section</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentTemplate = null;
+        let currentSection = null;
+        let quillEditor = null;
+        let pendingParentId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTemplates();
+            initializeDefaultTemplate();
+            setupColorPicker();
+        });
+
+        async function loadTemplates() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/templates', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    renderTemplateList(data.templates);
+                    if (data.templates.length > 0) {
+                        selectTemplate(data.templates[0]);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load templates:', error);
+            }
+        }
+
+        async function initializeDefaultTemplate() {
+            try {
+                const token = localStorage.getItem('token');
+                await fetch('/api/templates/init-default', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                loadTemplates();
+            } catch (error) {
+                console.error('Failed to initialize default template:', error);
+            }
+        }
+
+        function renderTemplateList(templates) {
+            const container = document.getElementById('template-list');
+            container.innerHTML = templates.map(template => {
+                const templateJson = JSON.stringify(template).replace(/"/g, '&quot;');
+                const isSelected = currentTemplate && currentTemplate._id === template._id;
+                return `
+                    <div class="p-3 bg-neutral-600 rounded cursor-pointer hover:bg-neutral-500 ${isSelected ? 'ring-2 ring-blue-500' : ''}" 
+                         onclick="selectTemplate(${templateJson})">
+                        <div class="font-medium">${template.name}</div>
+                        <div class="text-sm text-neutral-400">${template.description || 'No description'}</div>
+                        ${template.isDefault ? '<span class="text-xs bg-blue-500 px-2 py-1 rounded mt-1 inline-block">Default</span>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectTemplate(template) {
+            currentTemplate = template;
+            renderSectionTree(template.sections);
+            
+            // Update template list to show selection
+            const container = document.getElementById('template-list');
+            const items = container.querySelectorAll('.p-3');
+            items.forEach(item => {
+                item.classList.remove('ring-2', 'ring-blue-500');
+                if (item.onclick && item.onclick.toString().includes(template._id)) {
+                    item.classList.add('ring-2', 'ring-blue-500');
+                }
+            });
+        }
+
+        function renderSectionTree(sections, level = 0) {
+            const container = document.getElementById('section-tree');
+            if (level === 0) container.innerHTML = '';
+            
+            sections.forEach((section, index) => {
+                const div = document.createElement('div');
+                div.className = `section-item p-2 rounded ${level > 0 ? 'ml-' + (level * 4) : ''}`;
+                div.style.backgroundColor = section.enabled ? 'rgba(55, 65, 81, 0.3)' : 'rgba(107, 114, 128, 0.3)';
+                div.draggable = true;
+                div.dataset.sectionId = section.id;
+                div.dataset.level = level;
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="drag-handle material-symbols-outlined text-sm">drag_indicator</span>
+                            <div class="w-4 h-4 rounded" style="background-color: ${section.color}"></div>
+                            <span class="${section.enabled ? 'text-white' : 'text-neutral-400'}">${section.title}</span>
+                            ${!section.enabled ? '<span class="text-xs text-neutral-500">(Disabled)</span>' : ''}
+                            ${section.headingOnly ? '<span class="text-xs text-blue-400">(Heading Only)</span>' : ''}
+                        </div>
+                        <div class="section-controls">
+                            <div class="move-buttons">
+                                <button onclick="moveSectionUp('${section.id}', ${level})" class="move-btn" ${index === 0 ? 'disabled' : ''}>↑</button>
+                                <button onclick="moveSectionDown('${section.id}', ${level})" class="move-btn" ${index === sections.length - 1 ? 'disabled' : ''}>↓</button>
+                            </div>
+                            <button onclick="editSection('${section.id}')" class="text-blue-400 hover:text-blue-300 p-1">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                            </button>
+                            <button onclick="addChildSection('${section.id}')" class="text-green-400 hover:text-green-300 p-1">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                            </button>
+                            <button onclick="deleteSection('${section.id}')" class="text-red-400 hover:text-red-300 p-1">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add drag event listeners
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('drop', handleDrop);
+                div.addEventListener('dragend', handleDragEnd);
+                
+                container.appendChild(div);
+                
+                if (section.children && section.children.length > 0) {
+                    renderSectionTree(section.children, level + 1);
+                }
+            });
+        }
+
+        function editSection(sectionId) {
+            const section = findSectionById(currentTemplate.sections, sectionId);
+            if (!section) return;
+            
+            currentSection = section;
+            renderSectionEditor(section);
+        }
+
+        function renderSectionEditor(section) {
+            const container = document.getElementById('section-editor');
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Title</label>
+                        <input type="text" id="edit-title" value="${section.title}" class="w-full p-2 bg-neutral-600 text-white rounded border border-neutral-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Color</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="edit-color" value="${section.color}" class="w-12 h-10 rounded border border-neutral-500">
+                            <input type="text" id="edit-color-hex" value="${section.color}" class="flex-1 p-2 bg-neutral-600 text-white rounded border border-neutral-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="edit-enabled" ${section.enabled ? 'checked' : ''} class="rounded">
+                        <label for="edit-enabled" class="text-sm">Enabled</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="edit-heading-only" ${section.headingOnly ? 'checked' : ''} class="rounded">
+                        <label for="edit-heading-only" class="text-sm">Heading Only (no content editor)</label>
+                    </div>
+                    <div id="content-editor-section">
+                        <label class="block text-sm font-medium mb-2">Content</label>
+                        <div id="quill-editor" class="quill-editor" style="height: 200px;"></div>
+                    </div>
+                    <button onclick="updateSection()" class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                        Update Section
+                    </button>
+                </div>
+            `;
+            
+            // Initialize Quill editor
+            quillEditor = new Quill('#quill-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        ['link', 'blockquote'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['clean']
+                    ]
+                }
+            });
+            
+            if (section.content) {
+                quillEditor.root.innerHTML = section.content;
+            }
+            
+            // Setup color picker sync
+            const colorPicker = document.getElementById('edit-color');
+            const colorHex = document.getElementById('edit-color-hex');
+            
+            colorPicker.addEventListener('change', (e) => {
+                colorHex.value = e.target.value;
+            });
+            
+            colorHex.addEventListener('input', (e) => {
+                colorPicker.value = e.target.value;
+            });
+            
+            // Handle heading-only toggle
+            const headingOnlyCheckbox = document.getElementById('edit-heading-only');
+            const contentSection = document.getElementById('content-editor-section');
+            
+            function toggleContentEditor() {
+                if (headingOnlyCheckbox.checked) {
+                    contentSection.style.display = 'none';
+                } else {
+                    contentSection.style.display = 'block';
+                }
+            }
+            
+            headingOnlyCheckbox.addEventListener('change', toggleContentEditor);
+            toggleContentEditor(); // Initial state
+        }
+
+        function updateSection() {
+            if (!currentSection) return;
+            
+            currentSection.title = document.getElementById('edit-title').value;
+            currentSection.color = document.getElementById('edit-color').value;
+            currentSection.enabled = document.getElementById('edit-enabled').checked;
+            currentSection.headingOnly = document.getElementById('edit-heading-only').checked;
+            if (quillEditor) {
+                currentSection.content = quillEditor.root.innerHTML;
+            }
+            
+            renderSectionTree(currentTemplate.sections);
+            alert('Section updated! Remember to save the template.');
+        }
+
+        function addRootSection() {
+            pendingParentId = null;
+            showAddSectionModal();
+        }
+
+        function addChildSection(parentId) {
+            pendingParentId = parentId;
+            showAddSectionModal();
+        }
+
+        function showAddSectionModal() {
+            document.getElementById('add-section-modal').classList.remove('hidden');
+            document.getElementById('add-section-modal').classList.add('flex');
+            document.getElementById('section-title').focus();
+        }
+
+        function hideAddSectionModal() {
+            document.getElementById('add-section-modal').classList.add('hidden');
+            document.getElementById('add-section-modal').classList.remove('flex');
+            document.getElementById('add-section-form').reset();
+            document.getElementById('section-color').value = '#f97316';
+            document.getElementById('section-color-hex').value = '#f97316';
+            document.getElementById('section-enabled').checked = true;
+            document.getElementById('section-heading-only').checked = false;
+        }
+
+        document.getElementById('add-section-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('section-title').value.trim();
+            if (!title) {
+                alert('Please enter a section title');
+                return;
+            }
+            
+            const newSection = {
+                id: 'section-' + Date.now(),
+                title: title,
+                color: document.getElementById('section-color').value,
+                enabled: document.getElementById('section-enabled').checked,
+                headingOnly: document.getElementById('section-heading-only').checked,
+                content: '',
+                children: []
+            };
+            
+            if (pendingParentId) {
+                const parent = findSectionById(currentTemplate.sections, pendingParentId);
+                if (parent) {
+                    if (!parent.children) parent.children = [];
+                    parent.children.push(newSection);
+                }
+            } else {
+                currentTemplate.sections.push(newSection);
+            }
+            
+            renderSectionTree(currentTemplate.sections);
+            hideAddSectionModal();
+            alert('Section added! Remember to save the template.');
+        });
+
+        function deleteSection(sectionId) {
+            if (!confirm('Are you sure you want to delete this section?')) return;
+            
+            const removed = removeSectionById(currentTemplate.sections, sectionId);
+            if (removed) {
+                renderSectionTree(currentTemplate.sections);
+                
+                if (currentSection && currentSection.id === sectionId) {
+                    document.getElementById('section-editor').innerHTML = '<p class="text-neutral-400">Select a section to edit</p>';
+                    currentSection = null;
+                }
+                
+                alert('Section deleted! Remember to save the template.');
+            } else {
+                alert('Section not found or could not be deleted.');
+            }
+        }
+
+        async function saveTemplate() {
+            if (!currentTemplate) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/templates/${currentTemplate._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: currentTemplate.name,
+                        description: currentTemplate.description,
+                        sections: currentTemplate.sections
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Template saved successfully!');
+                    loadTemplates();
+                } else {
+                    alert('Failed to save template: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Failed to save template:', error);
+                alert('Failed to save template');
+            }
+        }
+        
+        async function saveSectionOrder() {
+            if (!currentTemplate) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/templates/${currentTemplate._id}/sections/reorder`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sections: currentTemplate.sections
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Section order saved successfully');
+                    return true;
+                } else {
+                    console.error('Failed to save section order:', data.error);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Failed to save section order:', error);
+                return false;
+            }
+        }
+
+        async function createNewTemplate() {
+            const name = prompt('Enter template name:');
+            if (!name) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/templates', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: 'Custom template'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    loadTemplates();
+                    selectTemplate(data.template);
+                } else {
+                    alert('Failed to create template: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Failed to create template:', error);
+                alert('Failed to create template');
+            }
+        }
+
+        function setupColorPicker() {
+            document.addEventListener('change', function(e) {
+                if (e.target.id === 'section-color') {
+                    document.getElementById('section-color-hex').value = e.target.value;
+                }
+            });
+            
+            document.addEventListener('input', function(e) {
+                if (e.target.id === 'section-color-hex') {
+                    document.getElementById('section-color').value = e.target.value;
+                }
+            });
+        }
+
+        // Drag and drop functionality
+        let draggedElement = null;
+        
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.target.closest('.section-item')?.classList.add('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropTarget = e.target.closest('.section-item');
+            if (dropTarget && draggedElement && dropTarget !== draggedElement) {
+                const draggedId = draggedElement.dataset.sectionId;
+                const targetId = dropTarget.dataset.sectionId;
+                const draggedLevel = parseInt(draggedElement.dataset.level);
+                const targetLevel = parseInt(dropTarget.dataset.level);
+                
+                // Only allow reordering within the same level
+                if (draggedLevel === targetLevel) {
+                    reorderSections(draggedId, targetId, draggedLevel);
+                }
+            }
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+        
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            draggedElement = null;
+        }
+        
+        async function reorderSections(draggedId, targetId, level) {
+            const sections = level === 0 ? currentTemplate.sections : findParentSections(currentTemplate.sections, draggedId);
+            if (!sections) return;
+            
+            const draggedIndex = sections.findIndex(s => s.id === draggedId);
+            const targetIndex = sections.findIndex(s => s.id === targetId);
+            
+            if (draggedIndex !== -1 && targetIndex !== -1) {
+                const [draggedSection] = sections.splice(draggedIndex, 1);
+                sections.splice(targetIndex, 0, draggedSection);
+                renderSectionTree(currentTemplate.sections);
+                
+                const saved = await saveSectionOrder();
+                if (saved) {
+                    alert('Section reordered and saved successfully!');
+                } else {
+                    alert('Section reordered! Please save the template manually.');
+                }
+            }
+        }
+        
+        async function moveSectionUp(sectionId, level) {
+            const sections = level === 0 ? currentTemplate.sections : findParentSections(currentTemplate.sections, sectionId);
+            if (!sections) return;
+            
+            const index = sections.findIndex(s => s.id === sectionId);
+            if (index > 0) {
+                [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
+                renderSectionTree(currentTemplate.sections);
+                
+                const saved = await saveSectionOrder();
+                if (saved) {
+                    alert('Section moved up and saved successfully!');
+                } else {
+                    alert('Section moved up! Please save the template manually.');
+                }
+            }
+        }
+        
+        async function moveSectionDown(sectionId, level) {
+            const sections = level === 0 ? currentTemplate.sections : findParentSections(currentTemplate.sections, sectionId);
+            if (!sections) return;
+            
+            const index = sections.findIndex(s => s.id === sectionId);
+            if (index !== -1 && index < sections.length - 1) {
+                [sections[index], sections[index + 1]] = [sections[index + 1], sections[index]];
+                renderSectionTree(currentTemplate.sections);
+                
+                const saved = await saveSectionOrder();
+                if (saved) {
+                    alert('Section moved down and saved successfully!');
+                } else {
+                    alert('Section moved down! Please save the template manually.');
+                }
+            }
+        }
+        
+        function findParentSections(sections, childId) {
+            for (let section of sections) {
+                if (section.children) {
+                    if (section.children.some(child => child.id === childId)) {
+                        return section.children;
+                    }
+                    const found = findParentSections(section.children, childId);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        // Utility functions
+        function findSectionById(sections, id) {
+            for (let section of sections) {
+                if (section.id === id) return section;
+                if (section.children) {
+                    const found = findSectionById(section.children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function removeSectionById(sections, id) {
+            for (let i = 0; i < sections.length; i++) {
+                if (sections[i].id === id) {
+                    sections.splice(i, 1);
+                    return true;
+                }
+                if (sections[i].children && removeSectionById(sections[i].children, id)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

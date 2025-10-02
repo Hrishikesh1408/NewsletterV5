@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+</head>
+<body>
+    <h1>Test Login</h1>
+    <button onclick="testServer()">Test Server</button>
+    <button onclick="testLogin()">Test Login</button>
+    <div id="result"></div>
+
+    <script>
+        async function testServer() {
+            try {
+                const response = await fetch('http://localhost:3000/api/test');
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 'Server Test: ' + JSON.stringify(result);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Server Error: ' + error.message;
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: 'owner@gmail.com', password: 'owner123' })
+                });
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 'Login Test: ' + JSON.stringify(result);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Login Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

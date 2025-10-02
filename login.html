@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Login - Newsletter Manager</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-500: #1173d4;
+        --neutral-800: #1f2937;
+        --neutral-700: #374151;
+        --neutral-500: #6b7280;
+        --neutral-400: #9ca3af;
+        --neutral-50: #f9fafb;
+      }
+      .icon {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+</head>
+<body class="bg-neutral-800 font-sans text-neutral-50" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<main class="flex-1 flex items-center justify-center px-6 py-12">
+<div class="w-full max-w-md">
+<div class="text-center mb-8">
+
+<h1 class="text-2xl font-bold text-white mb-2">Newsletter Manager</h1>
+<p class="text-neutral-400">Sign in to your account</p>
+</div>
+<div class="rounded-lg border border-neutral-700 bg-neutral-800 p-8 shadow-lg">
+<form class="space-y-6">
+<div>
+<label class="block text-sm font-medium text-white mb-2">Email</label>
+<input type="email" required class="w-full rounded-md border-neutral-700 bg-neutral-800 focus:border-primary-500 focus:ring-primary-500 text-white placeholder:text-neutral-400" placeholder="Enter email (owner@gmail.com)" value="owner@gmail.com"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-white mb-2">Password</label>
+<input type="password" required class="w-full rounded-md border-neutral-700 bg-neutral-800 focus:border-primary-500 focus:ring-primary-500 text-white placeholder:text-neutral-400" placeholder="Enter password (owner123)" value="owner123"/>
+</div>
+<div class="flex items-center justify-between">
+<label class="flex items-center">
+<input type="checkbox" class="rounded border-neutral-700 bg-neutral-800 text-primary-500 focus:ring-primary-500 focus:ring-offset-0"/>
+<span class="ml-2 text-sm text-neutral-400">Remember me</span>
+</label>
+<a href="#" class="text-sm text-primary-500 hover:text-primary-400">Forgot password?</a>
+</div>
+<button type="submit" class="w-full flex items-center justify-center gap-2 rounded-md h-12 px-4 text-sm font-semibold bg-primary-500 text-white hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined icon">login</span>
+<span>Sign In</span>
+</button>
+</form>
+</div>
+</div>
+</main>
+</div>
+</div>
+<script>
+document.querySelector('form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const username = document.querySelector('input[type="email"]').value;
+  const password = document.querySelector('input[type="password"]').value;
+  
+  try {
+    const response = await fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('userData', JSON.stringify(result.user));
+      window.location.href = result.redirect;
+    } else {
+      alert(result.message || 'Login failed');
+    }
+  } catch (error) {
+    alert('Login failed. Please try again.');
+  }
+});
+</script>
+
+</body></html>

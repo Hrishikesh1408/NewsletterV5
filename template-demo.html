@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Configuration Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-neutral-800 text-white min-h-screen">
+    <div class="container mx-auto p-6">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4">Hierarchical Template Configuration</h1>
+            <p class="text-xl text-neutral-400 mb-6">Dynamic newsletter structure with customizable sections</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-neutral-700 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-amber-500">settings</span>
+                    <h2 class="text-xl font-semibold">Template Configuration</h2>
+                </div>
+                <p class="text-neutral-400 mb-4">Configure hierarchical sections with custom colors and enable/disable options</p>
+                <a href="template-config.html" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                    Configure Templates
+                </a>
+            </div>
+
+            <div class="bg-neutral-700 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-blue-500">edit</span>
+                    <h2 class="text-xl font-semibold">Dynamic Editor</h2>
+                </div>
+                <p class="text-neutral-400 mb-4">Edit newsletter content using the configured template structure with Quill editors</p>
+                <a href="dynamic-newsletter-editor.html" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                    Open Editor
+                </a>
+            </div>
+
+            <div class="bg-neutral-700 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-green-500">view_list</span>
+                    <h2 class="text-xl font-semibold">Template Management</h2>
+                </div>
+                <p class="text-neutral-400 mb-4">Manage existing templates and create new ones</p>
+                <a href="template.html" class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                    Manage Templates
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-neutral-700 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Default Template Structure</h2>
+            <div class="bg-neutral-800 rounded-lg p-4">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-4 h-4 rounded" style="background-color: #f97316;"></div>
+                        <span class="font-semibold text-lg">Engineering Team</span>
+                    </div>
+                    <div class="ml-6 space-y-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 rounded" style="background-color: #f97316;"></div>
+                            <span class="font-medium">Product Development</span>
+                        </div>
+                        <div class="ml-6 space-y-1">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded" style="background-color: #f97316;"></div>
+                                <span>Platform</span>
+                                <span class="text-xs bg-orange-500 px-2 py-1 rounded">Quill Editor</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded" style="background-color: #f97316;"></div>
+                                <span>Presales</span>
+                                <span class="text-xs bg-orange-500 px-2 py-1 rounded">Quill Editor</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded" style="background-color: #f97316;"></div>
+                                <span>Local Works</span>
+                                <span class="text-xs bg-orange-500 px-2 py-1 rounded">Quill Editor</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded" style="background-color: #f97316;"></div>
+                                <span>Stores</span>
+                                <span class="text-xs bg-orange-500 px-2 py-1 rounded">Quill Editor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-neutral-700 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <h3 class="font-semibold text-orange-500">Template Configuration</h3>
+                    <ul class="text-sm text-neutral-400 space-y-1">
+                        <li>• Hierarchical section structure</li>
+                        <li>• Custom colors for each section</li>
+                        <li>• Enable/disable sections</li>
+                        <li>• Add unlimited nested sections</li>
+                        <li>• Multiple template support</li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-semibold text-orange-500">Dynamic Editor</h3>
+                    <ul class="text-sm text-neutral-400 space-y-1">
+                        <li>• Quill rich text editors for each section</li>
+                        <li>• Auto-save functionality</li>
+                        <li>• Template structure navigation</li>
+                        <li>• Live preview generation</li>
+                        <li>• Responsive design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        .quill-editor { background: white; color: black; min-height: 120px; }
+        .section-header { border-left: 4px solid; padding-left: 1rem; }
+    </style>
+</head>
+<body class="bg-neutral-800 text-white">
+    <div class="container mx-auto p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold">Newsletter Editor</h1>
+            <div class="flex gap-3">
+                <select id="template-selector" class="px-4 py-2 bg-neutral-700 text-white rounded border border-neutral-600" onchange="switchTemplate()">
+                    <option value="">Select Template...</option>
+                </select>
+                <button onclick="addCustomSection()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Add Section</button>
+                <button id="save-btn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+            </div>
+        </div>
+        <div id="editor-container"></div>
+    </div>
+
+    <script>
+        let newsletterId = new URLSearchParams(window.location.search).get('id');
+        let visibleFields = [];
+        let quillEditors = {};
+        let templateSections = [];
+        let customSections = [];
+        let availableTemplates = [];
+        let currentTemplateId = null;
+
+        async function loadNewsletter() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadTemplateConfig();
+
+            // If no ID or 'new', create a newsletter first
+            if (!newsletterId || newsletterId === 'new') {
+                await createNewsletter();
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/newsletters/newsletter/${newsletterId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        await createNewsletter();
+                        return;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const newsletter = await response.json();
+                if (newsletter.customSections) {
+                    customSections = newsletter.customSections;
+                }
+                renderEditor(newsletter);
+            } catch (error) {
+                console.error('Failed to load newsletter:', error);
+                await createNewsletter();
+            }
+        }
+
+        async function loadTemplateConfig() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:3000/api/templates', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    availableTemplates = data.templates;
+                    populateTemplateSelector();
+                    
+                    // Load default template
+                    const defaultTemplate = availableTemplates.find(t => t.isDefault) || availableTemplates[0];
+                    if (defaultTemplate) {
+                        currentTemplateId = defaultTemplate._id;
+                        templateSections = flattenSections(defaultTemplate.sections);
+                        document.getElementById('template-selector').value = defaultTemplate._id;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load template config:', error);
+            }
+        }
+
+        function populateTemplateSelector() {
+            const selector = document.getElementById('template-selector');
+            selector.innerHTML = '<option value="">Select Template...</option>';
+            
+            availableTemplates.forEach(template => {
+                const option = document.createElement('option');
+                option.value = template._id;
+                option.textContent = template.name;
+                selector.appendChild(option);
+            });
+        }
+
+        async function switchTemplate() {
+            const selector = document.getElementById('template-selector');
+            const templateId = selector.value;
+            
+            if (!templateId) return;
+            
+            const template = availableTemplates.find(t => t._id === templateId);
+            if (!template) return;
+            
+            currentTemplateId = templateId;
+            templateSections = flattenSections(template.sections);
+            
+            // Re-render editor with new template
+            const mockNewsletter = {
+                dynamicContent: {},
+                customSections: customSections
+            };
+            
+            renderEditor(mockNewsletter);
+        }
+
+        function flattenSections(sections, level = 0) {
+            let flattened = [];
+            sections.forEach(section => {
+                if (section.enabled) {
+                    flattened.push({ ...section, level });
+                    if (section.children) {
+                        flattened = flattened.concat(flattenSections(section.children, level + 1));
+                    }
+                }
+            });
+            return flattened;
+        }
+
+        async function createNewsletter() {
+            try {
+                const response = await fetch('http://localhost:3000/api/newsletters/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: 'New Newsletter',
+                        platform: '',
+                        presales: '',
+                        qa: '',
+                        enterprise: '',
+                        sre: '',
+                        ownerNotes: ''
+                    })
+                });
+                
+                const newsletter = await response.json();
+                newsletterId = newsletter._id;
+                window.history.replaceState({}, '', `newsletter-editor.html?id=${newsletterId}`);
+                renderEditor(newsletter);
+            } catch (error) {
+                document.getElementById('editor-container').innerHTML = '<p class="text-red-400">Failed to create newsletter</p>';
+            }
+        }
+
+        function renderEditor(newsletter) {
+            const container = document.getElementById('editor-container');
+            container.innerHTML = '';
+            visibleFields = [];
+            quillEditors = {};
+
+            // Render template sections
+            templateSections.forEach(section => {
+                renderSection(container, section, newsletter);
+            });
+
+            // Render custom sections
+            customSections.forEach(section => {
+                renderCustomSection(container, section, newsletter);
+            });
+
+            // Render legacy fields
+            Object.keys(newsletter).forEach(field => {
+                if (['_id', 'title', 'dynamicContent', 'customSections', 'templateId'].includes(field)) return;
+                if (templateSections.find(s => s.id === field)) return;
+                
+                visibleFields.push(field);
+                const div = document.createElement('div');
+                div.className = 'mb-6 bg-neutral-700 rounded-lg p-4';
+                div.innerHTML = `
+                    <label class="block text-sm font-medium mb-2">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                    <textarea id="${field}" class="w-full p-2 bg-neutral-600 text-white rounded" rows="4">${newsletter[field] || ''}</textarea>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderSection(container, section, newsletter) {
+            visibleFields.push(section.id);
+            const div = document.createElement('div');
+            div.className = 'mb-6 bg-neutral-700 rounded-lg p-4';
+            
+            const marginClass = section.level > 0 ? `ml-${section.level * 4}` : '';
+            const headerSize = section.level === 0 ? 'text-xl' : section.level === 1 ? 'text-lg' : 'text-base';
+            
+            div.innerHTML = `
+                <div class="section-header mb-4 ${marginClass}" style="border-color: ${section.color}">
+                    <h3 class="${headerSize} font-bold" style="color: ${section.color}">${section.title}</h3>
+                </div>
+                <textarea id="editor-${section.id}" class="w-full p-3 bg-white text-black rounded border min-h-32 resize-y"></textarea>
+            `;
+            
+            container.appendChild(div);
+            
+            // Load existing content
+            const content = newsletter.dynamicContent?.[section.id] || newsletter[section.id] || '';
+            const textarea = document.getElementById(`editor-${section.id}`);
+            if (content) {
+                textarea.value = content.replace(/<[^>]*>/g, '');
+            }
+        }
+
+        function renderCustomSection(container, section, newsletter) {
+            visibleFields.push(section.id);
+            const div = document.createElement('div');
+            div.className = 'mb-6 bg-neutral-700 rounded-lg p-4 relative';
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="section-header" style="border-color: ${section.color}">
+                        <h3 class="text-lg font-bold" style="color: ${section.color}">${section.title}</h3>
+                    </div>
+                    <button onclick="removeCustomSection('${section.id}')" class="text-red-400 hover:text-red-300">
+                        ✕
+                    </button>
+                </div>
+                <textarea id="editor-${section.id}" class="w-full p-3 bg-white text-black rounded border min-h-32 resize-y"></textarea>
+            `;
+            
+            container.appendChild(div);
+            
+            // Load existing content
+            const content = newsletter.customSections?.find(s => s.id === section.id)?.content || '';
+            const textarea = document.getElementById(`editor-${section.id}`);
+            if (content) {
+                textarea.value = content.replace(/<[^>]*>/g, '');
+            }
+        }
+
+        async function saveNewsletter() {
+            const token = localStorage.getItem('token');
+            const updateData = {
+                dynamicContent: {},
+                customSections: []
+            };
+            
+            // Save textarea content
+            visibleFields.forEach(sectionId => {
+                const textarea = document.getElementById(`editor-${sectionId}`);
+                if (textarea) {
+                    updateData.dynamicContent[sectionId] = textarea.value;
+                }
+            });
+            
+            // Save custom sections
+            customSections.forEach(section => {
+                const textarea = document.getElementById(`editor-${section.id}`);
+                updateData.customSections.push({
+                    ...section,
+                    content: textarea ? textarea.value : ''
+                });
+            });
+            
+            // Save legacy textarea fields
+            visibleFields.forEach(field => {
+                const textarea = document.getElementById(field);
+                if (textarea && !document.getElementById(`editor-${field}`)) {
+                    updateData[field] = textarea.value;
+                }
+            });
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/newsletters/newsletter/${newsletterId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (response.ok) {
+                    alert('Newsletter saved successfully!');
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to save: ${error.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('Failed to save newsletter');
+            }
+        }
+
+        function addCustomSection() {
+            const title = prompt('Enter section title:');
+            if (!title) return;
+            
+            const newSection = {
+                id: 'custom-' + Date.now(),
+                title: title,
+                color: '#f97316',
+                content: ''
+            };
+            
+            customSections.push(newSection);
+            
+            // Re-render editor to include new section
+            const container = document.getElementById('editor-container');
+            renderCustomSection(container, newSection, {});
+        }
+
+        function removeCustomSection(sectionId) {
+            if (!confirm('Remove this section?')) return;
+            
+            customSections = customSections.filter(s => s.id !== sectionId);
+            delete quillEditors[sectionId];
+            
+            // Remove from DOM
+            const editorElement = document.getElementById(`editor-${sectionId}`);
+            if (editorElement) {
+                editorElement.closest('.bg-neutral-700').remove();
+            }
+        }
+
+        async function refreshTemplate() {
+            await loadTemplateConfig();
+            
+            // Save current newsletter data
+            const currentData = {};
+            Object.keys(quillEditors).forEach(sectionId => {
+                currentData[sectionId] = quillEditors[sectionId].root.innerHTML;
+            });
+            
+            // Re-render with new template
+            const mockNewsletter = {
+                dynamicContent: currentData,
+                customSections: customSections
+            };
+            
+            renderEditor(mockNewsletter);
+            alert('Template refreshed with latest configuration!');
+        }
+
+        document.getElementById('save-btn').addEventListener('click', saveNewsletter);
+        loadNewsletter();
+    </script>
+</body>
+</html>

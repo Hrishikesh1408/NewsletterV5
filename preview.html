@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Newsletter Preview - Newsletter Manager</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-500: #1173d4;
+        --neutral-800: #1f2937;
+        --neutral-700: #374151;
+        --neutral-500: #6b7280;
+        --neutral-400: #9ca3af;
+        --neutral-50: #f9fafb;
+      }
+      .icon {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+</head>
+<body class="bg-neutral-800 font-sans text-neutral-50">
+<div class="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-neutral-700 px-10 py-3">
+<div class="flex items-center gap-4 text-white">
+<div><a href="https://www.turbify.com" aria-label="Turbify"><svg width="111" height="40" viewBox="0 0 111 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.2571 33.4613V27.931H13.9166C13.2004 27.931 12.6888 27.7911 12.3819 27.5114C12.0749 27.2317 11.9214 26.774 11.9214 26.1384V6.99192H5.36031V12.4287H0V18.3441H5.36031V26.0621C5.36031 28.6811 6.02537 30.5754 7.3555 31.745C8.68563 32.8892 10.5401 33.4613 12.919 33.4613H16.2571Z" fill="white"></path><path d="M6.50286 0H18.7582V5.74336H6.50286V0Z" fill="#FEA702"></path><path d="M13.0057 5.74336H18.7582V11.7364H13.0057V5.74336Z" fill="#FEA702"></path><path d="M35.8391 13.4889V31.4636H30.3219V29.0154C29.7627 29.81 28.9991 30.4543 28.0311 30.9482C27.0847 31.4207 26.0308 31.6569 24.8693 31.6569C23.4927 31.6569 22.2774 31.3562 21.2234 30.7549C20.1694 30.1322 19.3521 29.2409 18.7713 28.0813C18.1906 26.9216 17.9002 25.5579 17.9002 23.9903V13.4889H23.3851V23.2494C23.3851 24.452 23.697 25.3861 24.3208 26.0519C24.9445 26.7176 25.7834 27.0505 26.8374 27.0505C27.9128 27.0505 28.7625 26.7176 29.3862 26.0519C30.01 25.3861 30.3219 24.452 30.3219 23.2494V13.4889H35.8391Z" fill="white"></path><path d="M44.5126 16.4847C45.1579 15.4968 45.9645 14.7237 46.9324 14.1654C47.9003 13.5855 48.9758 13.2956 50.1588 13.2956V19.1261H48.6424C47.2658 19.1261 46.2334 19.4268 45.5451 20.0281C44.8568 20.6079 44.5126 21.6387 44.5126 23.1205V31.4636H38.9954V13.4889H44.5126V16.4847Z" fill="white"></path><path d="M57.5065 16.0337C58.0227 15.1962 58.7648 14.5197 59.7327 14.0043C60.7006 13.4889 61.8084 13.2312 63.0559 13.2312C64.5401 13.2312 65.8844 13.607 67.089 14.3586C68.2935 15.1103 69.2399 16.184 69.9282 17.5799C70.638 18.9758 70.9929 20.5972 70.9929 22.444C70.9929 24.2909 70.638 25.923 69.9282 27.3404C69.2399 28.7363 68.2935 29.8208 67.089 30.5939C65.8844 31.3455 64.5401 31.7213 63.0559 31.7213C61.7869 31.7213 60.6791 31.4744 59.7327 30.9804C58.7863 30.465 58.0442 29.7886 57.5065 28.951V31.4636H51.9893V7.62618H57.5065V16.0337ZM65.379 22.444C65.379 21.0696 64.9918 19.9959 64.2174 19.2228C63.4646 18.4282 62.529 18.0309 61.4105 18.0309C60.3135 18.0309 59.3778 18.4282 58.6035 19.2228C57.8506 20.0174 57.4742 21.1018 57.4742 22.4763C57.4742 23.8507 57.8506 24.9352 58.6035 25.7298C59.3778 26.5243 60.3135 26.9216 61.4105 26.9216C62.5074 26.9216 63.4431 26.5243 64.2174 25.7298C64.9918 24.9137 65.379 23.8185 65.379 22.444Z" fill="white"></path><path d="M75.8555 11.6206C74.8876 11.6206 74.0917 11.3414 73.4679 10.783C72.8657 10.2032 72.5645 9.49452 72.5645 8.65699C72.5645 7.79798 72.8657 7.0893 73.4679 6.53095C74.0917 5.95112 74.8876 5.6612 75.8555 5.6612C76.8019 5.6612 77.5762 5.95112 78.1785 6.53095C78.8023 7.0893 79.1142 7.79798 79.1142 8.65699C79.1142 9.49452 78.8023 10.2032 78.1785 10.783C77.5762 11.3414 76.8019 11.6206 75.8555 11.6206ZM78.5979 13.4889V31.4636H73.0808V13.4889H78.5979Z" fill="white"></path><path d="M90.8235 18.0631H87.8552V31.4636H82.3381V18.0631H80.3377V13.4889H82.3381V12.9735C82.3381 10.7616 82.9726 9.08649 84.2417 7.94831C85.5107 6.78865 87.3713 6.20882 89.8233 6.20882C90.232 6.20882 90.5332 6.21956 90.7267 6.24103V10.9119C89.6728 10.8475 88.9307 10.9978 88.5005 11.3629C88.0703 11.7279 87.8552 12.3829 87.8552 13.3278V13.4889H90.8235V18.0631Z" fill="white"></path><path d="M111 13.4889L99.7075 40H93.7709L97.9007 30.8516L90.5768 13.4889H96.7392L100.901 24.7312L105.031 13.4889H111Z" fill="white"></path></svg></a></div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Newsletter Manager</h2>
+</div>
+<nav class="flex items-center gap-6 text-sm font-medium text-neutral-400">
+<a class="hover:text-white transition-colors" href="journal.html">Journal</a>
+<a class="hover:text-white transition-colors" href="template.html">Templates</a>
+<a class="hover:text-white transition-colors" href="admin.html">Dashboard</a>
+<a class="hover:text-white transition-colors" href="dept_forms.html">Editor</a>
+<a class="hover:text-white transition-colors text-white" href="preview.html">Preview</a>
+<a class="hover:text-white transition-colors" href="profile.html">Profile</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center rounded-full size-10 bg-neutral-700 text-neutral-400 hover:bg-neutral-600 hover:text-white transition-colors">
+<span class="material-symbols-outlined icon">help</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuABDKecGZbcjAMHTdzWJmDTZ4j2efK4lIA0oG73-NW48_vIs_fliAvDVuWdUde6_kMdOFK238SNC23Zfj_8OBb9xhscciV0bT8-6TivAwiNviJW_grZVnY4Lkkkm2RrFrPTUOH_CQaATMbWUVWGNhklKL7ZvwQ8WYjuvbNPLg5005oVN3ZKTWyFWhWmVHa_ZeobLTU0ZsqOlHhpaGg2kbaNZbe0DTeJV_MG6AMrU5i5BrGVLsA_lmGW30rt3cRZL1jWp1KzQEn0O7zc");'></div>
+</div>
+</header>
+<main class="flex-1 px-40 py-10">
+<div class="mx-auto max-w-4xl">
+<div class="mb-4">
+<span class="text-sm text-neutral-400">Campaigns / </span>
+<span class="text-sm font-medium text-white">Newsletter Preview</span>
+</div>
+<div class="mb-8">
+<h1 class="text-3xl font-bold text-white mb-2">Newsletter Preview</h1>
+<p class="text-neutral-400">Review the final version of your newsletter before sending.</p>
+</div>
+<div class="flex flex-col rounded-lg border border-neutral-700 bg-neutral-800 shadow-lg">
+<div class="flex items-center justify-between p-4 border-b border-neutral-700">
+<div class="flex h-10 items-center justify-center rounded-md bg-neutral-700 p-1">
+<label class="relative flex cursor-pointer h-full items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors has-[:checked]:bg-neutral-800 has-[:checked]:text-white">
+<span class="material-symbols-outlined icon mr-2">desktop_windows</span>
+                    Desktop
+                    <input checked="" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" name="preview-toggle" type="radio" value="Desktop"/>
+</label>
+<label class="relative flex cursor-pointer h-full items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors has-[:checked]:bg-neutral-800 has-[:checked]:text-white">
+<span class="material-symbols-outlined icon mr-2">phone_iphone</span>
+                    Mobile
+                    <input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" name="preview-toggle" type="radio" value="Mobile"/>
+</label>
+</div>
+</div>
+<div class="p-6 bg-neutral-900/50">
+<div class="mx-auto max-w-full overflow-hidden rounded-md border border-neutral-700">
+<iframe id="newsletter-preview" class="w-full h-[600px] border-0 bg-white" src="about:blank"></iframe>
+</div>
+</div>
+<div class="flex items-center justify-end gap-4 p-4 border-t border-neutral-700">
+<button onclick="downloadHTML()" class="flex items-center justify-center gap-2 rounded-md h-10 px-4 text-sm font-semibold bg-neutral-700 text-white hover:bg-neutral-600 transition-colors">
+<span class="material-symbols-outlined icon">download</span>
+<span class="truncate">Download HTML</span>
+</button>
+<button onclick="forceRefresh()" class="flex items-center justify-center gap-2 rounded-md h-10 px-4 text-sm font-semibold bg-primary-500 text-white hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined icon">refresh</span>
+<span class="truncate">Force Refresh</span>
+</button>
+<button onclick="showEmailModal()" class="flex items-center justify-center gap-2 rounded-md h-10 px-4 text-sm font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors">
+<span class="material-symbols-outlined icon">send</span>
+<span class="truncate">Send Email</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+<!-- Email Modal -->
+<div id="email-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+<div class="bg-neutral-800 rounded-lg p-6 w-full max-w-md mx-4">
+<h3 class="text-xl font-bold text-white mb-4">Send Newsletter</h3>
+<form id="email-form" class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-white mb-2">Subject</label>
+<input type="text" id="email-subject" value="Newsletter" class="w-full rounded-md border-neutral-700 bg-neutral-700 focus:border-primary-500 focus:ring-primary-500 text-white placeholder:text-neutral-400" placeholder="Newsletter Subject"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-white mb-2">Recipients</label>
+<textarea id="email-recipients" class="w-full rounded-md border-neutral-700 bg-neutral-700 focus:border-primary-500 focus:ring-primary-500 text-white placeholder:text-neutral-400" rows="4" placeholder="Enter email addresses separated by commas or new lines"></textarea>
+<p class="text-xs text-neutral-400 mt-1">Separate multiple emails with commas or new lines</p>
+</div>
+<div class="flex gap-3 pt-4">
+<button type="button" onclick="hideEmailModal()" class="flex-1 px-4 py-2 text-sm font-medium text-neutral-400 bg-neutral-700 rounded-md hover:bg-neutral-600">Cancel</button>
+<button type="submit" class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Send Email</button>
+</div>
+</form>
+</div>
+</div>
+
+<script>
+async function loadPreview() {
+  try {
+    // Always try to load the latest from localStorage first (most recent)
+    const savedHTML = localStorage.getItem('newsletter-html');
+    if (savedHTML) {
+      const iframe = document.getElementById('newsletter-preview');
+      iframe.srcdoc = savedHTML;
+      console.log('Loaded preview from localStorage');
+      return;
+    }
+    
+    // Try to load from API if no localStorage data
+    const projectId = localStorage.getItem('currentProject');
+    if (projectId) {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/api/newsletters/${projectId}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.html) {
+          const iframe = document.getElementById('newsletter-preview');
+          iframe.srcdoc = result.html;
+          localStorage.setItem('newsletter-html', result.html);
+          console.log('Loaded preview from API');
+          return;
+        }
+      }
+    }
+    
+    alert('No newsletter data found. Please generate a newsletter first.');
+  } catch (error) {
+    console.error('Failed to load preview:', error);
+    alert('Failed to load preview. Please try again.');
+  }
+}
+
+// Show email modal
+function showEmailModal() {
+  const savedHTML = localStorage.getItem('newsletter-html');
+  if (!savedHTML) {
+    alert('No newsletter found. Please generate a newsletter first.');
+    return;
+  }
+  
+  document.getElementById('email-modal').classList.remove('hidden');
+  document.getElementById('email-modal').classList.add('flex');
+  document.getElementById('email-recipients').focus();
+}
+
+// Hide email modal
+function hideEmailModal() {
+  document.getElementById('email-modal').classList.add('hidden');
+  document.getElementById('email-modal').classList.remove('flex');
+  document.getElementById('email-form').reset();
+  document.getElementById('email-subject').value = 'Newsletter';
+}
+
+// Download HTML function
+function downloadHTML() {
+  const iframe = document.getElementById('newsletter-preview');
+  let html = '';
+  
+  try {
+    // Try to get HTML from iframe
+    if (iframe.srcdoc) {
+      html = iframe.srcdoc;
+    } else {
+      // Fallback to localStorage
+      html = localStorage.getItem('newsletter-html') || '';
+    }
+    
+    if (!html) {
+      alert('No newsletter content to download. Please generate a newsletter first.');
+      return;
+    }
+    
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `newsletter-${new Date().toISOString().split('T')[0]}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Download failed:', error);
+    alert('Failed to download newsletter.');
+  }
+}
+
+// Send email function
+async function sendEmail(recipients, subject) {
+  try {
+    const html = localStorage.getItem('newsletter-html');
+    
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:3000/api/email/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        html: html,
+        subject: subject,
+        recipients: recipients
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Newsletter sent successfully!');
+      hideEmailModal();
+    } else {
+      alert('Failed to send email: ' + (result.error || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Send email error:', error);
+    alert('Failed to send email: ' + error.message);
+  }
+}
+
+// Email form submission
+document.getElementById('email-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const subject = document.getElementById('email-subject').value.trim();
+  const recipientsText = document.getElementById('email-recipients').value.trim();
+  
+  if (!subject || !recipientsText) {
+    alert('Please fill in both subject and recipients');
+    return;
+  }
+  
+  const recipients = recipientsText
+    .split(/[,\n]/) 
+    .map(email => email.trim())
+    .filter(email => email && email.includes('@'))
+    .join(',');
+  
+  if (!recipients) {
+    alert('Please enter valid email addresses');
+    return;
+  }
+  
+  sendEmail(recipients, subject);
+});
+
+// Force refresh function
+async function forceRefresh() {
+  try {
+    // Clear localStorage first
+    localStorage.removeItem('newsletter-html');
+    
+    // Try to regenerate from API
+    const projectId = localStorage.getItem('currentProject');
+    if (projectId) {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/api/newsletters/${projectId}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.html) {
+          const iframe = document.getElementById('newsletter-preview');
+          iframe.srcdoc = result.html;
+          localStorage.setItem('newsletter-html', result.html);
+          console.log('Force refreshed from API');
+          return;
+        }
+      }
+    }
+    
+    alert('Failed to refresh. Please generate a newsletter first.');
+  } catch (error) {
+    console.error('Force refresh failed:', error);
+    alert('Failed to refresh. Please try again.');
+  }
+}
+
+// Listen for storage changes to auto-refresh preview
+window.addEventListener('storage', function(e) {
+  if (e.key === 'newsletter-html') {
+    loadPreview();
+  }
+});
+
+// Auto-load on page load
+document.addEventListener('DOMContentLoaded', function() {
+  loadPreview();
+  
+  // Close modal on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      hideEmailModal();
+    }
+  });
+});
+</script>
+
+</body></html>
