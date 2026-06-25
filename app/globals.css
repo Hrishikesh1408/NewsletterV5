@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1f2937;
+  --foreground: #f9fafb;
+  --primary-500: #1173d4;
+  --neutral-800: #1f2937;
+  --neutral-700: #374151;
+  --neutral-500: #6b7280;
+  --neutral-400: #9ca3af;
+  --neutral-50: #f9fafb;
+}
+
+@theme {
+  --color-primary-500: var(--primary-500);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-50: var(--neutral-50);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}

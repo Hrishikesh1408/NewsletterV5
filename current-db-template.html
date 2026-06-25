@@ -3,18 +3,47 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Turbify Newsletter – May 2026</title>
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+<title>Turbify Newsletter – {{monthYear}}</title>
   <style type="text/css">
+    :root {
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }
+    @media (prefers-color-scheme: dark) {
+      .dark-bg-main { background-color: #0d1421 !important; }
+      .dark-bg-content { background-color: #1a2332 !important; }
+      .dark-bg-card { background-color: #232d3e !important; }
+      .dark-text-primary { color: #f1f5f9 !important; }
+      .dark-text-secondary { color: #94a3b8 !important; }
+      .dark-border { border-color: #334155 !important; }
+      .dark-bg-header { background: #1e293b !important; }
+    }
+    [data-ogsc] .dark-bg-main { background-color: #0d1421 !important; }
+    [data-ogsc] .dark-bg-content { background-color: #1a2332 !important; }
+    [data-ogsc] .dark-bg-card { background-color: #232d3e !important; }
+    [data-ogsc] .dark-text-primary { color: #f1f5f9 !important; }
+    [data-ogsc] .dark-text-secondary { color: #94a3b8 !important; }
+
     @media screen and (max-width: 640px) {
       .container { width: 100% !important; max-width: 100% !important; }
       .responsive-table { width: 100% !important; display: block !important; }
       .responsive-row { display: block !important; width: 100% !important; }
       .column-50 { width: 100% !important; display: block !important; box-sizing: border-box !important; padding: 10px 20px !important; }
       .stat-container { display: flex !important; flex-wrap: wrap !important; width: 100% !important; }
-      .column-25 { width: 50% !important; display: inline-block !important; box-sizing: border-box !important; border-bottom: 1px solid rgba(255,255,255,0.12); border-right: none !important; }
+      .column-25 { width: 50% !important; display: inline-block !important; box-sizing: border-box !important; border-right: none !important; border-bottom: none !important; }
+      .stat-container td:nth-child(1), .stat-container td:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.12) !important; }
+      .stat-container td:nth-child(1), .stat-container td:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.12) !important; }
       .hero-title { font-size: 26px !important; }
       .hero-pad { padding: 20px !important; }
     }
+  
+    @media (prefers-color-scheme: dark) {
+      .keep-white { color: #ffffff !important; }
+    }
+    [data-ogsc] .keep-white { color: #ffffff !important; }
   </style>
 </head>
 <body style="margin:0; padding:0; background-color:#0f1b2d; font-family: Arial, sans-serif;">
@@ -41,7 +70,7 @@
                         <table border="0" cellpadding="0" cellspacing="0">
                           <tr>
                             <td style="background:rgba(255,255,255,0.18); border-radius:20px; padding:5px 14px;">
-                              <span style="color:#ffffff; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">📅 {{monthYear}}</span>
+                              <span class="keep-white" style="color:#ffffff; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">📅 {{monthYear}}</span>
                             </td>
                           </tr>
                         </table>
@@ -53,9 +82,9 @@
               <!-- Big headline -->
               <tr>
                 <td style="padding: 28px 36px 32px 36px;">
-                  <p style="margin:0 0 6px 0; font-size:11px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; text-transform:uppercase;">Monthly Newsletter</p>
-                  <p style="margin:0 0 10px 0; font-size:32px; font-weight:800; color:#ffffff; line-height:1.15;">{{title}}</p>
-                  <p style="margin:0; font-size:14px; color:rgba(255,255,255,0.85); line-height:1.6; max-width:440px;">{{intro}}</p>
+                  <p class="keep-white" style="margin:0 0 6px 0; font-size:11px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; text-transform:uppercase;">Monthly Newsletter</p>
+                  <p class="keep-white" style="margin:0 0 10px 0; font-size:32px; font-weight:800; color:#ffffff; line-height:1.15;">{{title}}</p>
+                  <p class="keep-white" style="margin:0; font-size:14px; color:rgba(255,255,255,0.85); line-height:1.6; max-width:440px;">{{intro}}</p>
                 </td>
               </tr>
               <!-- Stat bar -->
@@ -64,20 +93,20 @@
                   <table class="stat-container" border="0" cellpadding="0" cellspacing="0" width="100%" style="background:rgba(0,0,0,0.2); border-radius:10px;">
                     <tr>
                       <td class="column-25" width="25%" style="padding:14px; text-align:center; border-right:1px solid rgba(255,255,255,0.12);">
-                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;">{{storefrontDowntime}}</p>
-                        <p style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Storefront Downtime</p>
+                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;" class="keep-white">{{storefrontDowntime}}</p>
+                        <p class="keep-white" style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Storefront Downtime</p>
                       </td>
                       <td class="column-25" width="25%" style="padding:14px; text-align:center; border-right:1px solid rgba(255,255,255,0.12);">
-                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;">{{globalComponents}}</p>
-                        <p style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Global Components Done</p>
+                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;" class="keep-white">{{globalComponents}}</p>
+                        <p class="keep-white" style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Global Components Done</p>
                       </td>
                       <td class="column-25" width="25%" style="padding:14px; text-align:center; border-right:1px solid rgba(255,255,255,0.12);">
-                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;">{{ecpFunctionality}}</p>
-                        <p style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">ECP Functionality</p>
+                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;" class="keep-white">{{ecpFunctionality}}</p>
+                        <p class="keep-white" style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">ECP Functionality</p>
                       </td>
                       <td class="column-25" width="25%" style="padding:14px; text-align:center;">
-                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;">{{productionReleases}}</p>
-                        <p style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Production Releases</p>
+                        <p style="margin:0; font-size:22px; font-weight:800; color:#ffffff;" class="keep-white">{{productionReleases}}</p>
+                        <p class="keep-white" style="margin:4px 0 0 0; font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:.5px;">Production Releases</p>
                       </td>
                     </tr>
                   </table>
@@ -89,12 +118,12 @@
 
         <!-- ═══ BODY ═══ -->
         <tr>
-          <td style="background-color:#ffffff; padding:0;">
+          <td class="dark-bg-content" style="background-color:#ffffff; padding:0;">
 
             <!-- ─── ENGINEERING SECTION HEADER ─── -->
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
               <tr>
-                <td style="background: linear-gradient(90deg, #f0f7ff 0%, #e8f4ff 100%); padding:16px 36px; border-top:3px solid #0057b8;">
+                <td class="dark-bg-header" style="background: linear-gradient(90deg, #f0f7ff 0%, #e8f4ff 100%); padding:16px 36px; border-top:3px solid #0057b8;">
                   <p style="margin:0; font-size:13px; font-weight:800; color:#0057b8; text-transform:uppercase; letter-spacing:1.5px;">⚙️ &nbsp;Engineering Updates</p>
                 </td>
               </tr>
@@ -105,20 +134,20 @@
               <tr valign="top">
                 <!-- Platform & Billing -->
                 <td class="column-50" width="50%" style="padding:16px 8px 8px 20px;">
-                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #e2ecf8;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" class="dark-border" style="border-radius:10px; overflow:hidden; border:1px solid #e2ecf8;" class="dark-border">
                     <tr><td style="background: linear-gradient(135deg, #0057b8, #0080d4); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🧱 Platform &amp; Billing</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🧱 Platform &amp; Billing</p>
                     </td></tr>
-                    <tr><td style="padding:14px 16px; background:#fafcff;">
+                    <tr><td class="dark-bg-card" style="padding:14px 16px; background:#fafcff;">
                       {{platform}}
                     </td></tr>
                   </table>
                 </td>
                 <!-- Cosmos -->
                 <td class="column-50" width="50%" style="padding:16px 20px 8px 8px;">
-                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #e8e2f8;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" class="dark-border" style="border-radius:10px; overflow:hidden; border:1px solid #e8e2f8;" class="dark-border">
                     <tr><td style="background: linear-gradient(135deg, #6d28d9, #8b5cf6); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🤖 Cosmos</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🤖 Cosmos</p>
                     </td></tr>
                     <tr><td style="padding:14px 16px; background:#fdfaff;">
                       {{cosmos}}
@@ -135,7 +164,7 @@
                 <td class="column-50" width="50%" style="padding:8px 8px 8px 20px;">
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #e2f5e2;">
                     <tr><td style="background: linear-gradient(135deg, #059669, #10b981); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🛍️ Pre-Sales &amp; Nexus</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🛍️ Pre-Sales &amp; Nexus</p>
                     </td></tr>
                     <tr><td style="padding:14px 16px; background:#f7fdf9;">
                       {{presales}}
@@ -146,7 +175,7 @@
                 <td class="column-50" width="50%" style="padding:8px 20px 8px 8px;">
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #fce8d5;">
                     <tr><td style="background: linear-gradient(135deg, #ea580c, #f97316); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🌈 Google Workspace</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🌈 Google Workspace</p>
                     </td></tr>
                     <tr><td style="padding:14px 16px; background:#fffaf7;">
                       {{enterprise}}
@@ -163,7 +192,7 @@
                 <td class="column-50" width="50%" style="padding:8px 8px 16px 20px;">
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #fce2e2;">
                     <tr><td style="background: linear-gradient(135deg, #dc2626, #f43f5e); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🏬 Stores — Azure Migration</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🏬 Stores — Azure Migration</p>
                     </td></tr>
                     <tr><td style="padding:14px 16px; background:#fff8f8;">
                       {{sre}}
@@ -174,7 +203,7 @@
                 <td class="column-50" width="50%" style="padding:8px 20px 16px 8px;">
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:10px; overflow:hidden; border:1px solid #e2f0fc;">
                     <tr><td style="background: linear-gradient(135deg, #0284c7, #38bdf8); padding:12px 16px;">
-                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;">🧪 QA Highlights</p>
+                      <p style="margin:0; font-size:13px; font-weight:700; color:#ffffff;" class="keep-white">🧪 QA Highlights</p>
                     </td></tr>
                     <tr><td style="padding:14px 16px; background:#f7fbff;">
                       {{qa}}
@@ -219,6 +248,17 @@
 
             {{spotlight}}
 
+                        <!-- ─── JOINERS SECTION HEADER ─── -->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+                <td class="dark-bg-header" style="background: linear-gradient(90deg, #f0fdfa 0%, #ccfbf1 100%); padding:16px 36px; border-top:3px solid #0d9488;">
+                  <p style="margin:0; font-size:13px; font-weight:800; color:#0f766e; text-transform:uppercase; letter-spacing:1.5px;">👋 &nbsp;Welcome New Joiners!</p>
+                </td>
+              </tr>
+            </table>
+
+            {{joiners}}
+
             <!-- ─── BIRTHDAYS SECTION HEADER ─── -->
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
               <tr>
@@ -247,12 +287,12 @@
         <!-- ═══ FOOTER ═══ -->
         <tr>
           <td style="background: linear-gradient(135deg, #0f1b2d 0%, #0f2947 100%); padding: 28px 36px; border-radius:0 0 16px 16px; text-align:center;">
-            <p style="margin:0 0 6px 0; font-size:18px; font-weight:800; color:#ffffff;">Let's keep the momentum going! 🚀</p>
-            <p style="margin:0 0 16px 0; font-size:12px; color:rgba(148,163,184,0.9);">Turbify Engineering &amp; Business Teams &nbsp;·&nbsp; May 2026</p>
+            <p style="margin:0 0 6px 0; font-size:18px; font-weight:800; color:#ffffff;" class="keep-white">Let's keep the momentum going! 🚀</p>
+            <p style="margin:0 0 16px 0; font-size:12px; color:rgba(148,163,184,0.9);">Turbify Engineering &amp; Business Teams &nbsp;·&nbsp; {{monthYear}}</p>
             <table border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;">
               <tr>
                 <td style="background:rgba(255,255,255,0.08); border-radius:8px; padding:8px 20px;">
-                  <span style="color:#60a5fa; font-size:11px; font-weight:600;">turbify.com</span>
+                  <a href="https://turbify.com" target="_blank" style="color:#60a5fa; font-size:11px; font-weight:600; text-decoration:none;">turbify.com</a>
                 </td>
               </tr>
             </table>
